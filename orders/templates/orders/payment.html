@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment - KOMMERTIO{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="fw-bold mb-4"><i class="bi bi-credit-card-2-front"></i> Payment</h1>
+    
+    <div class="row">
+        <!-- Payment Form -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4">Payment Details</h4>
+                    
+                    <form method="post" id="payment-form">
+                        {% csrf_token %}
+                        
+                        <div class="alert alert-info mb-4">
+                            <i class="bi bi-info-circle"></i> 
+                            <strong>Test Mode:</strong> Use card number <code>4242 4242 4242 4242</code> for testing
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Card Number</label>
+                            <div id="card-element" class="form-control" style="height: 40px; padding-top: 10px;">
+                                <!-- Stripe.js will insert the Card Element here -->
+                            </div>
+                            <div id="card-errors" class="text-danger mt-2" role="alert"></div>
+                        </div>
+                        
+                        <div class="alert alert-secondary">
+                            <strong>For Testing:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Card: 4242 4242 4242 4242</li>
+                                <li>Expiry: Any future date</li>
+                                <li>CVV: Any 3 digits</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" id="submit-button" class="btn btn-success btn-lg">
+                                <i class="bi bi-lock-fill"></i> Pay ${{ order.total_amount }}
+                            </button>
+                            <a href="{% url 'orders:checkout' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Back
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4">Order Summary</h4>
+                    
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Shipping To:</h6>
+                        <p class="mb-1">{{ order.first_name }} {{ order.last_name }}</p>
+                        <p class="mb-1">{{ order.address }}</p>
+                        <p class="mb-1">{{ order.city }}, {{ order.state }} {{ order.postal_code }}</p>
+                        <p class="mb-1">{{ order.country }}</p>
+                        <p class="mb-0 text-muted"><i class="bi bi-envelope"></i> {{ order.email }}</p>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Items:</h6>
+                        {% for item in order.items.all %}
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                                <span>${{ item.get_cost }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal</span>
+                        <span>${{ order.total_amount }}</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping</span>
+                        <span class="text-success">FREE</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between">
+                        <span class="fw-bold fs-5">Total</span>
+                        <span class="fw-bold fs-5 text-success">${{ order.total_amount }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Stripe.js -->
+<script src="https://js.stripe.com/v3/"></script>
+
+<script>
+    // Create a Stripe client
+    var stripe = Stripe('{{ stripe_publishable_key }}');
+    
+    // Create an instance of Elements
+    var elements = stripe.elements();
+    
+    // Create an instance of the card Element
+    var cardElement = elements.create('card');
+    
+    // Add an instance of the card Element into the `card-element` div
+    cardElement.mount('#card-element');
+    
+    // Handle real-time validation errors from the card Element
+    cardElement.on('change', function(event) {
+        var displayError = document.getElementById('card-errors');
+        if (event.error) {
+            displayError.textContent = event.error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+    
+    // Handle form submission
+    var form = document.getElementById('payment-form');
+    var submitButton = document.getElementById('submit-button');
+    
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+        
+        stripe.createToken(cardElement).then(function(result) {
+            if (result.error) {
+                // Show error to customer
+                var errorElement = document.getElementById('card-errors');
+                errorElement.textContent = result.error.message;
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="bi bi-lock-fill"></i> Pay ${{ order.total_amount }}';
+            } else {
+                // Send token to server
+                var hiddenInput = document.createElement('input');
+                hiddenInput.setAttribute('type', 'hidden');
+                hiddenInput.setAttribute('name', 'stripeToken');
+                hiddenInput.setAttribute('value', result.token.id);
+                form.appendChild(hiddenInput);
+                
+                // Submit the form
+                form.submit();
+            }
+        });
+    });
+</script>
+{% endblock %}
