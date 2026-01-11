@@ -65,7 +65,7 @@ def user_login(request):
 
 
 @login_required
-def user_logout_post(request):
+def user_logout(request):
     """
     Logout view that only accepts POST requests
     More secure as it prevents CSRF attacks
@@ -128,9 +128,3 @@ class CustomPasswordResetCompleteView(PasswordResetCompleteView):
     Password reset complete confirmation
     """
     template_name = 'accounts/password_reset_complete.html'
-
-def logout_success(request):
-    """
-    Custom logout success page
-    """
-    return render(request, 'accounts/logout_success.html')
