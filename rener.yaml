@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: shophub
+    name: KOMMERTIO
     env: python
     buildCommand: |
       pip install -r requirements.txt
@@ -16,6 +16,6 @@ services:
         value: False
 
 databases:
-  - name: shophub-db
-    databaseName: shophub
-    user: shophub_user
+  - name: KOMMERTIO-db
+    databaseName: KOMMERTIO
+    user: KOMMERTIO_user
