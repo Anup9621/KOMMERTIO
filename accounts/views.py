@@ -128,3 +128,9 @@ class CustomPasswordResetCompleteView(PasswordResetCompleteView):
     Password reset complete confirmation
     """
     template_name = 'accounts/password_reset_complete.html'
+
+def logout_success(request):
+    """
+    Custom logout success page
+    """
+    return render(request, 'accounts/logout_success.html')

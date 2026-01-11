@@ -30,4 +30,5 @@ urlpatterns = [
     path('password-reset-complete/', 
          views.CustomPasswordResetCompleteView.as_view(), 
          name='password_reset_complete'),
+    path('logout/success/', views.logout_success, name='logout_success'),
 ]
