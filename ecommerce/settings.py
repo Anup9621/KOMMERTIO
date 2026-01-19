@@ -32,10 +32,14 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     
     # Local apps
-    'store.apps.StoreConfig',
-    'accounts.apps.AccountsConfig',
-    'cart.apps.CartConfig',
-    'orders.apps.OrdersConfig',
+    # 'store.apps.StoreConfig',
+    # 'accounts.apps.AccountsConfig',
+    # 'cart.apps.CartConfig',
+    # 'orders.apps.OrdersConfig',
+    'accounts',
+    'cart',
+    'orders',
+    'store',
 ]
 
 MIDDLEWARE = [

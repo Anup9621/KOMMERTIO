@@ -4,6 +4,7 @@ Handles user registration, login, logout, profile, and password reset
 """
 
 from django.shortcuts import render, redirect
+from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -65,6 +66,7 @@ def user_login(request):
 
 
 @login_required
+@require_POST
 def user_logout(request):
     """
     Logout view that only accepts POST requests
@@ -77,7 +79,7 @@ def user_logout(request):
         return redirect('store:home')
     else:
         # If accessed via GET, redirect to home
-        return redirect('store:home')
+        return redirect('store:home') 
 
 
 @login_required

@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - KOMMERIO{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-3">Welcome to KOMMERTIO</h1>
+                <p class="lead mb-4">Discover amazing products at unbeatable prices. Shop the latest trends and enjoy fast, reliable shipping.</p>
+                <a href="{% url 'store:product_list' %}" class="btn btn-light btn-lg">
+                    <i class="bi bi-bag-check"></i> Shop Now
+                </a>
+            </div>
+            <div class="col-lg-6 text-center">
+                <i class="bi bi-cart-check" style="font-size: 10rem; opacity: 0.8;"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Featured Products</h2>
+            <p class="text-muted">Check out our handpicked selection of trending items</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for product in featured_products %}
+                <div class="col-md-6 col-lg-3">
+                    <div class="card product-card border-0 shadow-sm">
+                        {% if product.get_discount_percentage %}
+                            <span class="discount-badge">-{{ product.get_discount_percentage }}%</span>
+                        {% endif %}
+                        
+                        <a href="{{ product.get_absolute_url }}">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" class="card-img-top product-img" alt="{{ product.name }}">
+                            {% else %}
+                                <img src="https://via.placeholder.com/300x250?text={{ product.name }}" class="card-img-top product-img" alt="{{ product.name }}">
+                            {% endif %}
+                        </a>
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{{ product.get_absolute_url }}" class="text-decoration-none text-dark">
+                                    {{ product.name|truncatewords:5 }}
+                                </a>
+                            </h5>
+                            
+                            <div class="mb-2">
+                                {% if product.discounted_price %}
+                                    <span class="price">${{ product.discounted_price }}</span>
+                                    <span class="original-price ms-2">${{ product.price }}</span>
+                                {% else %}
+                                    <span class="price">${{ product.price }}</span>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="d-grid">
+                                <a href="{{ product.get_absolute_url }}" class="btn btn-primary">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12 text-center">
+                    <p class="text-muted">No featured products available at the moment.</p>
+                </div>
+            {% endfor %}
+        </div>
+        
+        {% if featured_products %}
+            <div class="text-center mt-4">
+                <a href="{% url 'store:product_list' %}" class="btn btn-outline-primary btn-lg">
+                    View All Products <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Shop by Category</h2>
+            <p class="text-muted">Browse our wide range of product categories</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for category in categories %}
+                <div class="col-md-4 col-lg-2">
+                    <a href="{{ category.get_absolute_url }}" class="text-decoration-none">
+                        <div class="card category-card border-0 shadow-sm h-100">
+                            {% if category.image %}
+                                <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}" style="height: 150px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top bg-primary text-white d-flex align-items-center justify-content-center" style="height: 150px;">
+                                    <i class="bi bi-grid-3x3" style="font-size: 3rem;"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="card-body text-center">
+                                <h6 class="card-title mb-0">{{ category.name }}</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% empty %}
+                <div class="col-12 text-center">
+                    <p class="text-muted">No categories available.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="p-4">
+                    <i class="bi bi-truck text-primary" style="font-size: 3rem;"></i>
+                    <h4 class="mt-3">Free Shipping</h4>
+                    <p class="text-muted">On orders over 15$</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="p-4">
+                    <i class="bi bi-shield-check text-primary" style="font-size: 3rem;"></i>
+                    <h4 class="mt-3">Secure Payment</h4>
+                    <p class="text-muted">100% secure transactions</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="p-4">
+                    <i class="bi bi-arrow-repeat text-primary" style="font-size: 3rem;"></i>
+                    <h4 class="mt-3">Easy Returns</h4>
+                    <p class="text-muted">7-day return policy</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
