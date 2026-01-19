@@ -66,20 +66,17 @@ def user_login(request):
 
 
 @login_required
-@require_POST
 def user_logout(request):
     """
-    Logout view that only accepts POST requests
-    More secure as it prevents CSRF attacks
+    Logout view with debugging
     """
-    if request.method == 'POST':
-        username = request.user.username
-        logout(request)
-        messages.success(request, f'{username}, you have been logged out successfully.')
-        return redirect('store:home')
-    else:
-        # If accessed via GET, redirect to home
-        return redirect('store:home') 
+    print(f"LOGOUT: User {request.user.username} is logging out")
+    username = request.user.username
+    logout(request)
+    print("LOGOUT: User logged out successfully")
+    messages.info(request, f'Goodbye {username}! You have been logged out.')
+    print("LOGOUT: Redirecting to home")
+    return redirect('store:home')
 
 
 @login_required

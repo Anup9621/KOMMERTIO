@@ -153,6 +153,9 @@ RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', 'your_razorpay_secre
 CART_SESSION_ID = 'cart'
 SESSION_COOKIE_AGE = 86400  # 24 hours in seconds
 
+#Expiration Time
+PASSWORD_RESET_TIMEOUT = 3600
+
 # Security Settings for Production
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
