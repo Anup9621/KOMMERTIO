@@ -131,6 +131,8 @@ LOGOUT_REDIRECT_URL = 'store:home'
 # For development - prints emails to console
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+
+
 # For production - use SMTP (example with Gmail)
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'smtp.gmail.com'
