@@ -16,7 +16,7 @@ SECRET_KEY = 'django-insecure-your-secret-key-change-in-production'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['kommertio9.onrender.com']
 
 # Application definition
 INSTALLED_APPS = [
